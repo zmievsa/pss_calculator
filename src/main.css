@@ -1,0 +1,33 @@
+.container {
+	width: 500px;
+	clear: both;
+	display: inline-block;
+}
+.container heading {
+	text-align: left;
+	font-size:130%;
+	font-weight: bold;
+}
+.container label {
+    float: left;
+    width: 150px;
+    text-align: left;
+}
+.container unit {
+	display:inherit;
+    float: left;
+    width: 10%;
+    margin: 5px;
+}
+.container input {
+	display: inherit;
+	width: 45%;
+	margin-bottom: 2mm;
+	float: left;
+}
+.container hr {
+	display: inherit;
+	width: 90%;
+	border: 2px solid black;
+	margin: 1em 0;
+}

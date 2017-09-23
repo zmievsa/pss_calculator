@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<meta charset="utf-8"/>
+<head>
+	<title>Калькулятор ПСС</title>
+	<link rel="stylesheet" href="main.css">
+	<script type="text/javascript" src="index.js"></script>
+</head>
+<body>
+	<form>
+	<div class="container">
+		<heading>Обязательные поля</heading>
+		<hr/>
+		<label>Плотность соли</label><input id="salt_d"><unit>т/м³</unit>
+		<label>Плотность песка</label><input id="sand_d"><unit>т/м³</unit>
+		<hr/>
+		<heading>Опциональные поля</heading>
+		<hr/>
+		<label>Процент ПСС</label><input id="pss_percentage"><unit>%</unit>
+		<label>Объем ПСС</label><input id="pss_v"><unit>м³</unit>
+		<label>Объем соли</label><input id="salt_v"><unit>м³</unit>
+		<label>Объем песка</label><input id="sand_v"><unit>м³</unit>
+		<label>Масса ПСС</label><input id="pss_m"><unit>т</unit>
+		<label>Масса соли</label><input id="salt_m"><unit>т</unit>
+		<label>Масса песка</label><input id="sand_m"><unit>т</unit>
+		<hr/>
+		<label>Плотность ПСС</label><input id="pss_d"><unit>т/м³</unit>
+		<hr/>
+		<input type="button" value="Посчитать" onClick="evaluateFields(pss_percentage, salt_m, salt_v, salt_d, sand_m, sand_v, sand_d, pss_m, pss_v, pss_d)">
+		<input type="reset" value="Сброс">
+	</div>
+	</form>
+	v5 <!-- Version -->
+<script type="text/javascript">testCalculateFields()</script> <!-- To be removed in production -->
+</body>
+</html>
