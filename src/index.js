@@ -1,3 +1,18 @@
+class AssignmentManager {
+	constructor() {
+		this.was_assigned = true
+	}
+	assign(obj, attr, value) {
+		if (!obj[attr]) {
+			obj[attr] = value;
+			this.was_assigned = true
+		}
+	}
+	empty() {
+		this.was_assigned = false
+	}
+}
+
 class Compound {
 	// Salt and Sand
 	constructor(name, mass, volume, density) {
@@ -61,120 +76,39 @@ function checkFields(pss, salt, sand) {
 		throw err
 	}
 }
+
 function calculateFields(pss, salt, sand) {
-	if (pss.percentage) {
-		pss.density = 100 / ((pss.percentage / salt.density) + (100-pss.percentage) / sand.density);
-		if (pss.volume) {
-			pss.mass = pss.calcMass();
-			salt.mass = pss.mass * (pss.percentage / 100);
-			sand.mass = pss.mass * ((100 - pss.percentage) / 100);
-			salt.volume = salt.calcVolume();
-			sand.volume = sand.calcVolume();
+	m = new AssignmentManager()
+	while (m.was_assigned) {
+		m.empty()
+		for (item of [pss, salt, sand]) {
+			if (item.density && item.volume) {m.assign(item, "mass", item.calcMass())}
+			else if (item.mass && item.density) {m.assign(item, "volume", item.calcVolume())}
+			else if (item.volume && item.mass) {m.assign(item, "density", item.calcDensity())}
 		}
-		else if (salt.volume) {
-			salt.mass = salt.calcMass();
-			pss.mass = salt.mass / (pss.percentage / 100);
-			sand.mass = pss.mass - salt.mass;
-			pss.volume = pss.calcVolume()
-			sand.volume = sand.calcVolume();
+		for (attr of ["mass", "volume"]) {
+			// Attributes that are found from equation [salt + sand = PSS]
+			if (pss[attr] && salt[attr]) {
+				m.assign(sand, attr, pss[attr] - salt[attr])
+			}
+			if (pss[attr] && sand[attr]) {
+				m.assign(salt, attr, pss[attr] - sand[attr])
+			}
+			if (salt[attr] && sand[attr]) {
+				m.assign(pss, attr, sand[attr] + salt[attr])
+			}
 		}
-		else if (sand.volume) {
-			sand.mass = sand.calcMass()
-			pss.mass = sand.mass / ((100 - pss.percentage) / 100)
-			salt.mass = pss.mass - sand.mass
-			pss.volume = pss.calcVolume()
-			salt.volume = salt.calcVolume()
+		if (pss.percentage && salt.density && sand.density) {
+			m.assign(pss, "density", 100 / ((pss.percentage / salt.density) + (100-pss.percentage) / sand.density))
 		}
-		else if (pss.mass) {
-			salt.mass = pss.mass * (pss.percentage / 100)
-			sand.mass = pss.mass - salt.mass
-			pss.volume = pss.calcVolume()
-			sand.volume = sand.calcVolume()
-			salt.volume = salt.calcVolume()
+		if (pss.mass && salt.mass) {
+			m.assign(pss, "percentage", (salt.mass / pss.mass) * 100)
 		}
-		else if (salt.mass) {
-			pss.mass = salt.mass / (pss.percentage / 100)
-			sand.mass = pss.mass - salt.mass
-			pss.volume = pss.calcVolume()
-			sand.volume = sand.calcVolume()
-			salt.volume = salt.calcVolume()
+		if (pss.mass && pss.percentage) {
+			m.assign(salt, "mass", pss.mass * (pss.percentage / 100))
 		}
-		else if (sand.mass) {
-			pss.mass = sand.mass / ((100 - pss.percentage) / 100)
-			salt.mass = pss.mass - sand.mass
-			pss.volume = pss.calcVolume()
-			sand.volume = sand.calcVolume()
-			salt.volume = salt.calcVolume()
-		}
-	}
-	else if (pss.volume) {
-		if (salt.volume) {
-			sand.volume = pss.volume - salt.volume
-			salt.mass = salt.calcMass()
-			sand.mass = sand.calcMass()
-		}
-		else if (sand.volume) {
-			salt.volume = pss.volume - sand.volume
-			salt.mass = salt.calcMass()
-			sand.mass = sand.calcMass()
-		}
-		else if (salt.mass) {
-			salt.volume = salt.calcVolume()
-			sand.volume = pss.volume - salt.volume
-			sand.mass = sand.calcMass()
-		}
-		else if (sand.mass) {
-			sand.volume = sand.calcVolume()
-			salt.volume = pss.volume - sand.volume
-			salt.mass = salt.calcMass()
-		}
-		pss.mass = salt.mass + sand.mass
-		pss.density = pss.calcDensity()
-		pss.percentage = (salt.mass / pss.mass) * 100
-	}
-	else if (salt.volume) {
-		salt.mass = (salt.volume * salt.density)
-		if (sand.volume) {
-			sand.mass = sand.calcMass();
-			pss.mass = sand.mass + salt.mass;
-			pss.volume = salt.volume + sand.volume;
-		}
-		else if (pss.mass) {
-			sand.mass = pss.mass - salt.mass
-			sand.volume = sand.calcVolume()
-			pss.volume = salt.volume + sand.volume;
-		}
-		else if (sand.mass) {
-			pss.mass = salt.mass + sand.mass
-			sand.volume = sand.calcVolume()
-			pss.volume = salt.volume + sand.volume
-		}
-		pss.density = pss.calcDensity()
-		pss.percentage = (salt.mass / pss.mass) * 100;
-	}
-	else if (sand.volume) {
-		sand.mass = sand.calcMass()
-		if (pss.mass) {
-			salt.mass = pss.mass - sand.mass
-			salt.volume = salt.calcVolume()
-			pss.volume = salt.volume + sand.volume
-		}
-		else if (salt.mass) {
-			pss.mass = salt.mass + sand.mass
-			salt.volume = salt.calcVolume()
-			pss.volume = salt.volume + sand.volume
-		}
-		pss.density = pss.calcDensity()
-		pss.percentage = (salt.mass / pss.mass) * 100;
-	}
-	else if (salt.mass) {
-		if (sand.mass) {
-			pss.mass = salt.mass + sand.mass
-			salt.volume = salt.calcVolume()
-			sand.volume = sand.calcVolume()
-			pss.volume = salt.volume + sand.volume
-			pss.density = pss.calcDensity()
-			pss.percentage = (salt.mass / pss.mass) * 100
+		if (pss.mass && pss.percentage) {
+			m.assign(sand, "mass", pss.mass * ((100 - pss.percentage) / 100))
 		}
 	}
 }
@@ -256,7 +190,7 @@ function testCase(test_name, pss, salt, sand) {
 	cleanUp(pss, salt, sand)
 }
 function cleanUp(pss, salt, sand) {
-	pss.percentage = ""
+	pss.percentage =  ""
 	pss.mass = ""
 	pss.volume = ""
 	pss.density = ""
