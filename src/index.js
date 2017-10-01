@@ -37,7 +37,7 @@ class PSS extends Compound {
 function getNum(string_num) {
 	// Because parseFloat("") evaluates to NaN
 	var num = parseFloat(string_num);
-	if (num === NaN) {
+	if (isNaN(num)) {
 		num = 0;
 	}
 	return num;
