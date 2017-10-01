@@ -78,7 +78,7 @@ function checkFields(pss, salt, sand) {
 }
 
 function calculateFields(pss, salt, sand) {
-	m = new AssignmentManager()
+	var m = new AssignmentManager()
 	while (m.was_assigned) {
 		m.empty()
 		for (item of [pss, salt, sand]) {
