@@ -8,9 +8,6 @@ class AssignmentManager {
 			this.was_assigned = true
 		}
 	}
-	empty() {
-		this.was_assigned = false
-	}
 }
 
 class Compound {
@@ -66,13 +63,15 @@ function evaluateFields(pss_percentage, salt_m, salt_v, salt_d, sand_m, sand_v, 
 
 function checkFields(pss, salt, sand) {
 	// If not all fields have been found
-	var err = new Error("Not enough information")
+	err = new Error("Not enough information")
 	for (compound of [pss, salt, sand]) {
 		if (!compound.mass || !compound.volume || !compound.density) {
+			window.alert("Not enough information")
 			throw err
 		}
 	}
 	if (!pss.percentage) {
+		window.alert("Not enough information")
 		throw err
 	}
 }
@@ -80,7 +79,7 @@ function checkFields(pss, salt, sand) {
 function calculateFields(pss, salt, sand) {
 	var m = new AssignmentManager()
 	while (m.was_assigned) {
-		m.empty()
+		m.was_assigned = false
 		for (item of [pss, salt, sand]) {
 			if (item.density && item.volume) {m.assign(item, "mass", item.calcMass())}
 			else if (item.mass && item.density) {m.assign(item, "volume", item.calcVolume())}
@@ -100,6 +99,12 @@ function calculateFields(pss, salt, sand) {
 		}
 		if (pss.percentage && salt.density && sand.density) {
 			m.assign(pss, "density", 100 / ((pss.percentage / salt.density) + (100-pss.percentage) / sand.density))
+		}
+		if (pss.percentage && salt.mass) {
+			m.assign(pss, "mass", 100 / (pss.percentage / salt.mass))
+		}
+		if (pss.percentage && sand.mass) {
+			m.assign(pss, "mass", 100 / ((100 - pss.percentage) / sand.mass))
 		}
 		if (pss.mass && salt.mass) {
 			m.assign(pss, "percentage", (salt.mass / pss.mass) * 100)
@@ -141,6 +146,7 @@ function testCalculateFields() {
 
 	pss.percentage = 32
 	sand.mass = 42.5
+	window.alert(pss.percentage)
 	testCase("pss.percentage and sand.mass", pss, salt, sand)
 
 	pss.volume = 62.5
@@ -187,10 +193,11 @@ function testCalculateFields() {
 function testCase(test_name, pss, salt, sand) {
 	calculateFields(pss, salt, sand)
 	checkValues(test_name, pss, salt, sand)
+	checkFields(pss, salt, sand)
 	cleanUp(pss, salt, sand)
 }
 function cleanUp(pss, salt, sand) {
-	pss.percentage =  ""
+	pss.percentage = ""
 	pss.mass = ""
 	pss.volume = ""
 	pss.density = ""
@@ -202,17 +209,27 @@ function cleanUp(pss, salt, sand) {
 	sand.density = 1
 }
 function checkValues(test_name, pss, salt, sand) {
+	pss_p = Math.round(pss.percentage)
+	pss_m = Math.round(pss.mass)
+	pss_v = Math.round(pss.volume)
+	pss_d = Math.round(pss.density)
+	sal_m = Math.round(salt.mass) 
+	sal_v = Math.round(salt.volume)
+	sal_d = Math.round(salt.density)
+	san_m = Math.round(sand.mass) 
+	san_v = Math.round(sand.volume)
+	san_d = Math.round(sand.density)
 	if (
-		parseInt(pss.percentage) !== 32	|| 
-		parseInt(pss.mass !== 62.5) 	||
-		parseInt(pss.volume !== 62.5)	||
-		parseInt(pss.density !== 1)		||
-		parseInt(salt.mass !== 20)		||
-		parseInt(salt.volume !== 20)	||
-		parseInt(salt.density !== 1)	||
-		parseInt(sand.mass !== 42.5)	||
-		parseInt(sand.volume !== 42.5)	||
-		parseInt(sand.density !== 1))
+		pss_p !== 32	|| 
+		!(pss_m === 63 || pss_m === 62) ||
+		!(pss_v === 63 || pss_v === 62)	||
+		pss_d !== 1		||
+		sal_m !== 20	||
+		sal_v !== 20	||
+		sal_d !== 1		||
+		!(san_m === 43 || san_m === 42)	||
+		!(san_v === 43 || san_v === 42)	||
+		san_d !== 1)
 	{
 		document.body.innerHTML = ""
 		document.write("Pss.percentage " + pss.percentage)
