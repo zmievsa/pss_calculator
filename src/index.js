@@ -63,7 +63,7 @@ function evaluateFields(pss_percentage, salt_m, salt_v, salt_d, sand_m, sand_v, 
 
 function checkFields(pss, salt, sand) {
 	// If not all fields have been found
-	err = new Error("Not enough information")
+	var err = new Error("Not enough information")
 	for (compound of [pss, salt, sand]) {
 		if (!compound.mass || !compound.volume || !compound.density) {
 			window.alert("Not enough information")
