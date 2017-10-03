@@ -66,12 +66,12 @@ function checkFields(pss, salt, sand) {
 	var err = new Error("Not enough information")
 	for (compound of [pss, salt, sand]) {
 		if (!compound.mass || !compound.volume || !compound.density) {
-			window.alert("Not enough information")
+			window.alert("Введено недостаточно информации.")
 			throw err
 		}
 	}
 	if (!pss.percentage) {
-		window.alert("Not enough information")
+		window.alert("Введено недостаточно информации.")
 		throw err
 	}
 }
