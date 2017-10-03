@@ -146,7 +146,6 @@ function testCalculateFields() {
 
 	pss.percentage = 32
 	sand.mass = 42.5
-	window.alert(pss.percentage)
 	testCase("pss.percentage and sand.mass", pss, salt, sand)
 
 	pss.volume = 62.5
@@ -209,28 +208,18 @@ function cleanUp(pss, salt, sand) {
 	sand.density = 1
 }
 function checkValues(test_name, pss, salt, sand) {
-	pss_p = Math.round(pss.percentage)
-	pss_m = Math.round(pss.mass)
-	pss_v = Math.round(pss.volume)
-	pss_d = Math.round(pss.density)
-	sal_m = Math.round(salt.mass) 
-	sal_v = Math.round(salt.volume)
-	sal_d = Math.round(salt.density)
-	san_m = Math.round(sand.mass) 
-	san_v = Math.round(sand.volume)
-	san_d = Math.round(sand.density)
 	if (
-		pss_p !== 32	|| 
-		!(pss_m === 63 || pss_m === 62) ||
-		!(pss_v === 63 || pss_v === 62)	||
-		pss_d !== 1		||
-		sal_m !== 20	||
-		sal_v !== 20	||
-		sal_d !== 1		||
-		!(san_m === 43 || san_m === 42)	||
-		!(san_v === 43 || san_v === 42)	||
-		san_d !== 1)
-	{
+		!isClose(pss.percentage, 32)	|| 
+		!isClose(pss.mass, 62.5) 	||
+		!isClose(pss.volume, 62.5)	||
+		!isClose(pss.density, 1)		||
+		!isClose(salt.mass, 20)		||
+		!isClose(salt.volume, 20)	||
+		!isClose(salt.density, 1)	||
+		!isClose(sand.mass, 42.5)	||
+		!isClose(sand.volume, 42.5)	||
+		!isClose(sand.density, 1))
+{
 		document.body.innerHTML = ""
 		document.write("Pss.percentage " + pss.percentage)
 		document.write("<br/>")
@@ -255,4 +244,8 @@ function checkValues(test_name, pss, salt, sand) {
 		window.alert(test_name + " test case failed")
 		throw new Error("FAILED TO RUN TESTS")
 	}
+}
+
+function isClose(num, target_value, precision=1) {
+	return Math.abs(num - target_value) < precision
 }
