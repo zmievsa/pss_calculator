@@ -97,6 +97,7 @@ function calculateFields(pss, salt, sand) {
 				m.assign(pss, attr, sand[attr] + salt[attr])
 			}
 		}
+		// Specific to physics/math
 		if (pss.percentage && salt.density && sand.density) {
 			m.assign(pss, "density", 100 / ((pss.percentage / salt.density) + (100-pss.percentage) / sand.density))
 		}
@@ -109,6 +110,7 @@ function calculateFields(pss, salt, sand) {
 		if (pss.mass && salt.mass) {
 			m.assign(pss, "percentage", (salt.mass / pss.mass) * 100)
 		}
+		// Salt/sand mass from pss
 		if (pss.mass && pss.percentage) {
 			m.assign(salt, "mass", pss.mass * (pss.percentage / 100))
 		}
