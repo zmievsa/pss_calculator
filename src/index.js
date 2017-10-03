@@ -81,9 +81,9 @@ function calculateFields(pss, salt, sand) {
 	while (m.was_assigned) {
 		m.was_assigned = false
 		for (item of [pss, salt, sand]) {
-			if (item.density && item.volume) {m.assign(item, "mass", item.calcMass())}
-			else if (item.mass && item.density) {m.assign(item, "volume", item.calcVolume())}
-			else if (item.volume && item.mass) {m.assign(item, "density", item.calcDensity())}
+			if (item.density && item.volume) m.assign(item, "mass", item.calcMass());
+			else if (item.mass && item.density) m.assign(item, "volume", item.calcVolume());
+			else if (item.volume && item.mass) m.assign(item, "density", item.calcDensity());
 		}
 		for (attr of ["mass", "volume"]) {
 			// Attributes that are found from equation [salt + sand = PSS]
