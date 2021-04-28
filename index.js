@@ -189,7 +189,7 @@ function testCalculateFields() {
 	salt.mass = 20
 	sand.mass = 42.5
 	testCase("salt.mass and sand.mass", pss, salt, sand)
-	window.alert("ALL TESTS RAN")
+	console.log("ALL TESTS RAN")
 }
 function testCase(test_name, pss, salt, sand) {
 	calculateFields(pss, salt, sand)
